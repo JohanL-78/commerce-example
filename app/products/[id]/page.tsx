@@ -2,21 +2,28 @@ import { prisma } from '@/lib/prisma'
 import ClientProductPage from '@/components/ClientProductPage'
 
 async function getProduct(id: string) {
-  const product = await prisma.product.findUnique({
-    where: { id }
-  })
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id }
+    })
 
-  if (!product) return null
+    if (!product) return null
 
-  return {
-    id: product.id,
-    name: product.name,
-    description: product.description || '',
-    price: Number(product.price),
-    imageId: product.imageId || undefined,
-    stock: product.stock
+    return {
+      id: product.id,
+      name: product.name,
+      description: product.description || '',
+      price: Number(product.price),
+      imageId: product.imageId || undefined,
+      stock: product.stock
+    }
+  } catch (error) {
+    console.log('Database not available during build')
+    return null
   }
 }
+
+export const dynamic = 'force-dynamic'
 
 export default async function ProductPage({
   params
