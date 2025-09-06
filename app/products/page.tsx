@@ -4,19 +4,26 @@ import ProductGridAnimated from '@/components/ProductGridAnimated'
 import { prisma } from '@/lib/prisma'
 
 async function getProducts(category?: string) {
-  const products = await prisma.product.findMany({
-    where: category ? { category } : {},
-    orderBy: { createdAt: 'desc' }
-  })
+  try {
+    const products = await prisma.product.findMany({
+      where: category ? { category } : {},
+      orderBy: { createdAt: 'desc' }
+    })
 
-  return products.map(product => ({
-    id: product.id,
-    name: product.name,
-    description: product.description || '',
-    price: Number(product.price),
-    imageId: product.imageId || undefined
-  }))
+    return products.map(product => ({
+      id: product.id,
+      name: product.name,
+      description: product.description || '',
+      price: Number(product.price),
+      imageId: product.imageId || undefined
+    }))
+  } catch (error) {
+    console.log('Database not available during build')
+    return []
+  }
 }
+
+export const dynamic = 'force-dynamic'
 
 export default async function ProductsPage({
   searchParams
