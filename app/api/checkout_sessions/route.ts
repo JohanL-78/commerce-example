@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth'
-import { stripe } from '@/lib/stripe-server'
+import { getStripe } from '@/lib/stripe-server'
 
 export async function POST(req: Request) {
   try {
@@ -15,6 +15,7 @@ export async function POST(req: Request) {
       return Response.json({ error: 'Panier vide' }, { status: 400 })
     }
 
+    const stripe = getStripe()
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: items.map((item: {
