@@ -16,13 +16,18 @@ interface ProductGridAnimatedProps {
 export default function ProductGridAnimated({ products, title }: ProductGridAnimatedProps) {
   return (
     <div>
-      <h2 className="text-3xl font-bold text-center text-sky-900 mb-12">
-        {title}
-      </h2>
+      {title && (
+        <h2 className="text-4xl md:text-5xl font-bold text-center text-slate-900 mb-16">
+          {title}
+        </h2>
+      )}
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* Mobile-first responsive grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 items-stretch">
         {products.map((product) => (
-          <ProductCardAnimated key={product.id} product={product} />
+          <div key={product.id} className="h-full">
+            <ProductCardAnimated product={product} />
+          </div>
         ))}
       </div>
     </div>

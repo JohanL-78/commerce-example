@@ -43,7 +43,7 @@ export default function CheckoutButton() {
   return (
     <button
       onClick={handleCheckout}
-      className="w-full bg-sky-900 text-yellow-300 py-3 px-6 rounded-lg text-lg font-semibold hover:bg-yellow-300 hover:text-sky-900"
+      className="w-full bg-cyan-600 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-yellow-300 hover:text-black"
     >
       {session ? 'Payer maintenant' : 'Se connecter pour continuer'}
     </button>

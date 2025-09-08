@@ -28,10 +28,10 @@ export default function AddToCartButton({ product }: { product: Product }) {
   return (
     <button
       onClick={handleAddToCart}
-      className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+      className={`px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm w-full ${
         isAdded 
           ? 'bg-green-600 hover:bg-green-700 text-white' 
-          : 'hover:bg-sky-900 bg-yellow-300 hover:text-yellow-200 text-sky-900'
+          : 'hover:bg-red-500 bg-cyan-600 hover:text-white text-white'
       }`}
     >
       {isAdded ? (
