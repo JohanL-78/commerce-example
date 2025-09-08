@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import HeaderAnimated from '@/components/HeaderAnimated'
 import Footer from '@/components/Footer'
 import ProductGridAnimated from '@/components/ProductGridAnimated'
@@ -46,9 +47,9 @@ export default async function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4 md:pt-8">
-                <a href="#featured" className="inline-block bg-white shadow-lg text-cyan-900 hover:bg-yellow-300 hover:text-zinc-800 font-semibold px-8 py-3 rounded-lg">
+                <Link href="#featured" className="inline-block bg-white shadow-lg text-cyan-900 hover:bg-yellow-300 hover:text-zinc-800 font-semibold px-8 py-3 rounded-lg">
                   Explorer les produits
-                </a>
+                </Link>
                 
               </div>
               
@@ -96,9 +97,9 @@ export default async function Home() {
                 <p className="text-slate-600 mb-6 md:mb-8 leading-relaxed">
                   Explorez notre catalogue complet avec plus de 500 produits
                 </p>
-                <a href="/products" className="inline-block bg-yellow-300 text-sky-900 hover:bg-cyan-600 hover:text-white font-semibold px-8 py-4 rounded-lg">
+                <Link href="/products" className="inline-block bg-yellow-300 text-sky-900 hover:bg-cyan-600 hover:text-white font-semibold px-8 py-4 rounded-lg">
                   Voir tous les produits
-                </a>
+                </Link>
               </div>
             </div>
           </div>
