@@ -3,7 +3,7 @@ import HeaderAnimated from '@/components/HeaderAnimated'
 import Footer from '@/components/Footer'
 import ProductGridAnimated from '@/components/ProductGridAnimated'
 import { prisma } from '@/lib/prisma'
-import { Store, Users, Package, Headphones, Search, ShoppingBag, ArrowRight } from 'lucide-react'
+import { Store, Users, Package, Headphones, ShoppingBag, ArrowRight } from 'lucide-react'
 
 async function getFeaturedProducts() {
   try {
@@ -46,7 +46,7 @@ export default async function Home() {
                     Notre boutique
                   </h1>
                   <p className="text-lg md:text-xl text-cyan-100 font-medium">
-                    Découvrez l'excellence
+                    Découvrez l&apos;excellence
                   </p>
                 </div>
               </div>
