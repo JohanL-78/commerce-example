@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { ImageIcon, Euro } from 'lucide-react'
 import AddToCartButton from './AddToCartButton'
 
 interface Product {
@@ -27,32 +28,40 @@ export default function ProductCardAnimated({ product }: { product: Product }) {
             <div className="w-full h-full flex items-center justify-center text-cyan-900 bg-white">
               <div className="text-center">
                 <div className="w-16 h-16 mx-auto mb-3 bg-yellow-300 rounded-full flex items-center justify-center">
-                  <svg className="w-8 h-8 text-zinc-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+                  <ImageIcon className="w-8 h-8 text-zinc-800" />
                 </div>
-                <span className="text-sm font-semibold text-cyan-900">Pas d&apos;image</span>
+                <div className="flex flex-col items-center">
+                  <span className="text-sm font-semibold text-cyan-900">Pas d&apos;image</span>
+                  <span className="text-xs text-slate-500">Image manquante</span>
+                </div>
               </div>
             </div>
           )}
         </div>
       </Link>
       
-      <div className="p-5 flex flex-col flex-1 space-y-4">
-        <h3 className="text-xl font-bold text-slate-800 flex-1 leading-tight group-hover:text-cyan-900 transition-colors">
+      <div className="p-3 md:p-5 flex flex-col flex-1 space-y-3 md:space-y-4">
+        <h3 className="text-lg md:text-xl font-bold text-slate-800 leading-tight group-hover:text-cyan-900 transition-colors line-clamp-2">
           {product.name}
         </h3>
         
-        <p className="text-slate-600 text-sm flex-1 leading-relaxed line-clamp-2">
+        <p className="text-slate-600 text-xs md:text-sm leading-relaxed overflow-hidden text-ellipsis" style={{
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical'
+        }}>
           {product.description}
         </p>
         
-        <div className="flex flex-col gap-3 mt-auto pt-4">
-          <div className="bg-white shadow-lg px-3 py-2 rounded-lg border w-fit">
-            <span className="text-xl font-bold text-cyan-900 block leading-none">
-              {product.price}€
-            </span>
-            <span className="text-xs text-slate-600 font-semibold">Prix TTC</span>
+        <div className="flex flex-col gap-2 md:gap-3 mt-auto pt-3 md:pt-4">
+          <div className="flex items-center gap-2 bg-white shadow-lg px-2 md:px-3 py-1.5 md:py-2 rounded-lg border w-fit">
+            <Euro className="w-4 h-4 md:w-5 md:h-5 text-cyan-900" />
+            <div className="flex flex-col">
+              <span className="text-lg md:text-xl font-bold text-cyan-900 leading-none">
+                {product.price}€
+              </span>
+              <span className="text-xs text-slate-600 font-semibold">Prix TTC</span>
+            </div>
           </div>
           <div className="transform hover:scale-105 transition-transform">
             <AddToCartButton product={product} />

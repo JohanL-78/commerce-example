@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cartStore'
 import { stripePromise } from '@/lib/stripe'
+import { CreditCard, LogIn } from 'lucide-react'
 
 export default function CheckoutButton() {
   const { data: session } = useSession()
@@ -43,9 +44,25 @@ export default function CheckoutButton() {
   return (
     <button
       onClick={handleCheckout}
-      className="w-full bg-cyan-600 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-yellow-300 hover:text-black"
+      className="w-full flex items-center gap-3 justify-center bg-cyan-600 text-white py-3 px-6 rounded-lg hover:bg-cyan-700 hover:text-white transition-colors"
     >
-      {session ? 'Payer maintenant' : 'Se connecter pour continuer'}
+      {session ? (
+        <>
+          <CreditCard className="w-5 h-5" />
+          <div className="flex flex-col text-left">
+            <span className="text-lg font-semibold">Payer maintenant</span>
+            <span className="text-xs text-cyan-100 font-normal">Procéder au paiement</span>
+          </div>
+        </>
+      ) : (
+        <>
+          <LogIn className="w-5 h-5" />
+          <div className="flex flex-col text-left">
+            <span className="text-lg font-semibold">Se connecter</span>
+            <span className="text-xs text-cyan-100 font-normal">Pour continuer</span>
+          </div>
+        </>
+      )}
     </button>
   )
 }

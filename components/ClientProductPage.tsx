@@ -40,7 +40,7 @@ export default function ClientProductPage({ product }: { product: Product }) {
               
               <p className="text-gray-600 text-lg">{product.description}</p>
               
-              <div className="text-3xl font-bold text-blue-600">
+              <div className="text-3xl font-bold text-cyan-900">
                 {product.price}€
               </div>
               

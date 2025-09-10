@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X } from 'lucide-react'
+import { X, Save, Plus, Edit } from 'lucide-react'
 
 interface Product {
   id: string
@@ -78,10 +78,18 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl">
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-xl font-semibold">
-            {product ? 'Modifier le produit' : 'Nouveau produit'}
-          </h2>
-          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600">
+          <div className="flex items-center gap-3">
+            {product ? <Edit className="w-6 h-6 text-blue-600" /> : <Plus className="w-6 h-6 text-green-600" />}
+            <div className="flex flex-col">
+              <h2 className="text-xl font-semibold">
+                {product ? 'Modifier le produit' : 'Nouveau produit'}
+              </h2>
+              <span className="text-xs text-gray-500">
+                {product ? 'Mettre à jour les informations' : 'Ajouter un nouveau produit'}
+              </span>
+            </div>
+          </div>
+          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -199,15 +207,25 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="flex items-center gap-2 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Annuler
+              <X className="w-4 h-4" />
+              <div className="flex flex-col text-left">
+                <span className="font-medium">Annuler</span>
+                <span className="text-xs text-gray-500">Fermer sans sauver</span>
+              </div>
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              {product ? 'Mettre à jour' : 'Créer'}
+              <Save className="w-4 h-4" />
+              <div className="flex flex-col text-left">
+                <span className="font-medium">{product ? 'Mettre à jour' : 'Créer'}</span>
+                <span className="text-xs text-blue-100">
+                  {product ? 'Sauvegarder les modifications' : 'Ajouter le produit'}
+                </span>
+              </div>
             </button>
           </div>
         </form>
