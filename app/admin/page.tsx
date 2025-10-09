@@ -1,13 +1,13 @@
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import AdminDashboard from '@/components/AdminDashboard'
+import { authOptions } from '@/lib/auth'
 
 export default async function AdminPage() {
-  const session = await getServerSession()
-  
-  // Pour le moment, vérification simple par email
-  // À améliorer avec un système de rôles plus robuste
-  if (!session?.user?.email || !session.user.email.includes('admin')) {
+  const session = await getServerSession(authOptions)
+
+  // Vérification basée sur le rôle
+  if (!session?.user || session.user.role !== 'ADMIN') {
     redirect('/auth/signin')
   }
 

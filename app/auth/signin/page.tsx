@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 export default function SignInPage() {
@@ -11,6 +11,7 @@ export default function SignInPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -18,6 +19,8 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
+      const callbackUrl = searchParams.get('callbackUrl') || '/'
+
       const result = await signIn('credentials', {
         email,
         password,
@@ -26,12 +29,14 @@ export default function SignInPage() {
 
       if (result?.error) {
         setError('Email ou mot de passe incorrect')
-      } else {
-        router.push('/')
+        setLoading(false)
+      } else if (result?.ok) {
+        // Utiliser window.location pour forcer un rechargement complet
+        // Cela garantit que la session est bien chargée
+        window.location.href = callbackUrl
       }
     } catch (err) {
       setError('Une erreur est survenue')
-    } finally {
       setLoading(false)
     }
   }

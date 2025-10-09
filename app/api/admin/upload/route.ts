@@ -29,8 +29,8 @@ export async function POST(req: Request) {
         {
           folder: 'mvp-commerce',
           transformation: [
-            { width: 800, height: 800, crop: 'fill' },
-            { quality: 'auto', fetch_format: 'auto' }
+            { width: 1200, height: 1200, crop: 'limit' }, // limit = ne redimensionne que si plus grand
+            { quality: 90, fetch_format: 'auto' } // 90 = haute qualité
           ]
         },
         (error, result) => {

@@ -1,21 +1,15 @@
 import { getServerSession } from 'next-auth'
-
-const ADMIN_EMAILS = [
-  'admin@example.com',
-  // Ajoutez ici les emails des administrateurs
-]
+import { authOptions } from '@/lib/auth'
 
 export async function isAdmin(): Promise<boolean> {
-  const session = await getServerSession()
-  
-  if (!session?.user?.email) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user) {
     return false
   }
-  
-  // Vérification simple par email pour le moment
-  // En production, utilisez un système de rôles dans la base de données
-  return ADMIN_EMAILS.includes(session.user.email) || 
-         session.user.email.includes('admin')
+
+  // Vérification basée sur le rôle en base de données
+  return session.user.role === 'ADMIN'
 }
 
 export async function requireAdmin() {
