@@ -1,76 +1,85 @@
-// Rate limiting simple basé sur la mémoire
-// En production, utilisez Redis ou un service externe comme Upstash
+// Rate limiting persistant avec Prisma
+// Stocke les compteurs dans la table RateLimitEntry pour résister aux redémarrages et au multi-instance
+
+import { prisma } from '@/lib/prisma'
 
 interface RateLimitConfig {
   interval: number // Fenêtre de temps en ms
   maxRequests: number // Nombre max de requêtes par fenêtre
+  prefix?: string // Optionnel pour différencier les limites
 }
 
-interface RequestRecord {
-  count: number
-  resetTime: number
+interface RateLimitResult {
+  success: boolean
+  remaining: number
+  reset: number
 }
 
-const requests = new Map<string, RequestRecord>()
+interface RateLimiter {
+  check: (identifier: string) => Promise<RateLimitResult>
+}
 
-// Nettoyage automatique toutes les heures
-setInterval(() => {
-  const now = Date.now()
-  for (const [key, record] of requests.entries()) {
-    if (now > record.resetTime) {
-      requests.delete(key)
-    }
-  }
-}, 60 * 60 * 1000)
+const DEFAULT_GRACE_MS = 250 // Évite les effets bord si deux appels tombent sur la même ms
 
-export function rateLimit(config: RateLimitConfig) {
+export function createPersistentRateLimiter(config: RateLimitConfig): RateLimiter {
   return {
-    check: (identifier: string): { success: boolean; remaining: number; reset: number } => {
-      const now = Date.now()
-      const record = requests.get(identifier)
+    async check(identifier: string): Promise<RateLimitResult> {
+      const now = new Date()
+      const key = config.prefix ? `${config.prefix}:${identifier}` : identifier
 
-      if (!record || now > record.resetTime) {
-        // Nouvelle fenêtre
-        const resetTime = now + config.interval
-        requests.set(identifier, {
-          count: 1,
-          resetTime
+      return prisma.$transaction(async (tx) => {
+        const record = await tx.rateLimitEntry.findUnique({
+          where: { identifier: key }
         })
+
+        // Fenêtre expirée ou premier passage : on ré-initialise
+        if (!record || record.resetAt <= now) {
+          const resetAt = new Date(now.getTime() + config.interval + DEFAULT_GRACE_MS)
+          await tx.rateLimitEntry.upsert({
+            where: { identifier: key },
+            update: { count: 1, resetAt },
+            create: { identifier: key, count: 1, resetAt }
+          })
+          return {
+            success: true,
+            remaining: config.maxRequests - 1,
+            reset: resetAt.getTime()
+          }
+        }
+
+        if (record.count >= config.maxRequests) {
+          return {
+            success: false,
+            remaining: 0,
+            reset: record.resetAt.getTime()
+          }
+        }
+
+        const updated = await tx.rateLimitEntry.update({
+          where: { identifier: key },
+          data: { count: { increment: 1 } }
+        })
+
         return {
           success: true,
-          remaining: config.maxRequests - 1,
-          reset: resetTime
+          remaining: Math.max(config.maxRequests - updated.count, 0),
+          reset: updated.resetAt.getTime()
         }
-      }
-
-      if (record.count >= config.maxRequests) {
-        // Limite dépassée
-        return {
-          success: false,
-          remaining: 0,
-          reset: record.resetTime
-        }
-      }
-
-      // Incrémenter le compteur
-      record.count++
-      return {
-        success: true,
-        remaining: config.maxRequests - record.count,
-        reset: record.resetTime
-      }
+      })
     }
   }
 }
 
 // Limiteur pour les routes d'authentification : 5 tentatives par minute
-export const authRateLimit = rateLimit({
+export const authRateLimit = createPersistentRateLimiter({
   interval: 60 * 1000, // 1 minute
-  maxRequests: 5
+  maxRequests: 5,
+  prefix: 'auth'
 })
 
 // Limiteur pour la création de compte : 3 comptes par heure par IP
-export const signupRateLimit = rateLimit({
+export const signupRateLimit = createPersistentRateLimiter({
   interval: 60 * 60 * 1000, // 1 heure
-  maxRequests: 3
+  maxRequests: 3,
+  prefix: 'signup'
 })

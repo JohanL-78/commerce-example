@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { requireAdmin } from '@/lib/auth-admin'
+import { validatePrice } from '@/lib/validation'
 
 const prisma = new PrismaClient()
 
@@ -9,15 +10,20 @@ export async function POST(req: Request) {
 
     const { name, description, price, imageId, category, stock, featured } = await req.json()
 
-    if (!name || !price) {
-      return Response.json({ error: 'Nom et prix requis' }, { status: 400 })
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      return Response.json({ error: 'Le nom du produit est requis' }, { status: 400 })
+    }
+
+    const priceValidation = validatePrice(price)
+    if (!priceValidation.valid || priceValidation.value === undefined) {
+      return Response.json({ error: priceValidation.errors.join(', ') }, { status: 400 })
     }
 
     const product = await prisma.product.create({
       data: {
-        name,
+        name: name.trim(),
         description: description || null,
-        price,
+        price: priceValidation.value,
         imageId: imageId || null,
         category: category || null,
         stock: stock || 0,

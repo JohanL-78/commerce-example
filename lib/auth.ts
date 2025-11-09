@@ -20,7 +20,7 @@ export const authOptions: AuthOptions = {
         }
 
         // Rate limiting basé sur l'email pour éviter les attaques brute-force
-        const rateLimitResult = authRateLimit.check(credentials.email)
+        const rateLimitResult = await authRateLimit.check(credentials.email)
         if (!rateLimitResult.success) {
           throw new Error('Trop de tentatives. Veuillez réessayer plus tard.')
         }

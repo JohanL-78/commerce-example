@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     // Rate limiting basé sur l'IP
     const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown'
-    const rateLimitResult = signupRateLimit.check(ip)
+    const rateLimitResult = await signupRateLimit.check(ip)
 
     if (!rateLimitResult.success) {
       return Response.json({

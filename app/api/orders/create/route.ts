@@ -23,37 +23,76 @@ export async function POST(req: Request) {
       return Response.json({ error: 'Utilisateur non trouvé' }, { status: 404 })
     }
 
+    // Vérifier le stock disponible pour chaque produit
+    for (const item of items) {
+      const product = await prisma.product.findUnique({
+        where: { id: item.product.id },
+        select: { stock: true, name: true }
+      })
+
+      if (!product) {
+        return Response.json({
+          error: `Produit ${item.product.name || 'inconnu'} non trouvé`
+        }, { status: 404 })
+      }
+
+      if (product.stock < item.quantity) {
+        return Response.json({
+          error: `Stock insuffisant pour ${product.name}. Disponible: ${product.stock}, demandé: ${item.quantity}`
+        }, { status: 400 })
+      }
+    }
+
+    // Calculer le total
     let total = 0
     for (const item of items) {
       total += item.product.price * item.quantity
     }
 
-    const order = await prisma.order.create({
-      data: {
-        userId: user.id,
-        total,
-        status: 'PENDING',
-        orderItems: {
-          create: items.map((item: {
-            product: {
-              id: string
-              price: number
+    // Créer la commande et décrémenter le stock dans une transaction
+    const order = await prisma.$transaction(async (tx) => {
+      // Créer la commande
+      const newOrder = await tx.order.create({
+        data: {
+          userId: user.id,
+          total,
+          status: 'PENDING',
+          orderItems: {
+            create: items.map((item: {
+              product: {
+                id: string
+                price: number
+              }
+              quantity: number
+            }) => ({
+              productId: item.product.id,
+              quantity: item.quantity,
+              price: item.product.price
+            }))
+          }
+        },
+        include: {
+          orderItems: {
+            include: {
+              product: true
             }
-            quantity: number
-          }) => ({
-            productId: item.product.id,
-            quantity: item.quantity,
-            price: item.product.price
-          }))
-        }
-      },
-      include: {
-        orderItems: {
-          include: {
-            product: true
           }
         }
+      })
+
+      // Décrémenter le stock pour chaque produit
+      for (const item of items) {
+        await tx.product.update({
+          where: { id: item.product.id },
+          data: {
+            stock: {
+              decrement: item.quantity
+            }
+          }
+        })
       }
+
+      return newOrder
     })
 
     return Response.json({ order }, { status: 201 })

@@ -50,6 +50,14 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
 }
 
+model RateLimitEntry {
+  identifier String   @id
+  count      Int      @default(0)
+  resetAt    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
 enum OrderStatus {
   PENDING
   PROCESSING
