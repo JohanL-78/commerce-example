@@ -17,7 +17,7 @@ export default function ProductGridAnimated({ products, title }: ProductGridAnim
   return (
     <div>
       {title && (
-        <h2 className="text-4xl md:text-5xl font-bold text-center text-slate-900 mb-16">
+        <h2 className="font-[family-name:var(--font-display)] text-4xl md:text-5xl font-semibold tracking-[-0.04em] text-center text-[#EEF3EF] mb-16">
           {title}
         </h2>
       )}

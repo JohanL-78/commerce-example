@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 function SignInForm() {
@@ -10,7 +10,6 @@ function SignInForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,14 +34,14 @@ function SignInForm() {
         // Cela garantit que la session est bien chargée
         window.location.href = callbackUrl
       }
-    } catch (err) {
+    } catch {
       setError('Une erreur est survenue')
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-950">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="text-3xl font-bold text-center">Connexion</h2>
@@ -60,7 +59,7 @@ function SignInForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-950 placeholder:text-gray-500"
               required
             />
           </div>
@@ -71,7 +70,7 @@ function SignInForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Mot de passe"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-950 placeholder:text-gray-500"
               required
             />
           </div>
@@ -96,7 +95,7 @@ function SignInForm() {
 export default function SignInPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-950">
         <div className="text-center">Chargement...</div>
       </div>
     }>

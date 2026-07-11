@@ -44,7 +44,7 @@ export default function SignUpPage() {
       } else {
         setError(data.error || 'Erreur lors de la création du compte')
       }
-    } catch (err) {
+    } catch {
       setError('Une erreur est survenue')
     } finally {
       setLoading(false)
@@ -52,7 +52,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-950">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="text-3xl font-bold text-center">Inscription</h2>
@@ -70,7 +70,7 @@ export default function SignUpPage() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Nom"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-950 placeholder:text-gray-500"
             />
           </div>
           
@@ -80,7 +80,7 @@ export default function SignUpPage() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="Email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-950 placeholder:text-gray-500"
               required
             />
           </div>
@@ -91,7 +91,7 @@ export default function SignUpPage() {
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               placeholder="Mot de passe"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-950 placeholder:text-gray-500"
               required
             />
           </div>
@@ -102,7 +102,7 @@ export default function SignUpPage() {
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               placeholder="Confirmer le mot de passe"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-950 placeholder:text-gray-500"
               required
             />
           </div>
