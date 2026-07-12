@@ -62,7 +62,7 @@ export default async function Home() {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative h-[92vh] w-[55vw]">
                 <Image
-                  src="https://images.unsplash.com/photo-1777646346045-df4bd1114148?q=80&w=2093&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src="/objectmint.png"
                   alt="Casque audio premium"
                   fill
                   priority
